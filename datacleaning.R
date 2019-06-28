@@ -1,6 +1,7 @@
 library(dplyr)
-#data cleaning
-sqf03 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf03.csv")
+library(tidyr)
+#loading in files
+sqf03 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf03.csv", stringsAsFactors = F)
 sqf04 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf04.csv")
 sqf05 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf05.csv")
 sqf06 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf06.csv")
@@ -17,8 +18,23 @@ sqf16 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf16.csv")
 sqf17 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf17.csv")
 sqf18 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf18.csv")
 
-sqf03 = select(sqf03, 2, 4:5, 10, 24, 25, 82)
-sqf04 = select(sqf04, 2, 4:5, 10, 24, 25, 82)
+#data = list(sqf03,sqf04)
+sqf03mod = sqf03
+sqf03mod$searched[sqf03mod$searched == "N" ] = as.integer(0)
+sqf03mod$searched[sqf03mod$searched == "Y" ] = as.integer(1)
+sqf03mod$anycontra[sqf03mod$anycontra == F ] = as.integer(0)
+sqf03mod$anycontra[sqf03mod$anycontra == T ] = as.integer(1)
+#formatting 2003 data into the format of the NC data
+sqf03mod = sqf03mod %>% 
+  select(pct, searched, anycontra, race) %>% 
+  group_by(pct, race) %>%
+  summarize(numstops = length(searched), 
+            numsearches = sum(as.numeric(searched)), numhits = sum(anycontra))
+
+#sqf03mod$timestop[sqf03mod$timestop >= 7:00 && sqf03mod$timestop <= 19:00] == "Day"
+#sqf03mod$timestop[sqf03mod$timestop > 19:00 || sqf03mod$timestop < 7:00] == "Night"
+
+
 
 
 
