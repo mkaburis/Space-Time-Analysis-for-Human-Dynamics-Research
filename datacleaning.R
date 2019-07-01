@@ -19,38 +19,27 @@ sqf16 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf16.csv", stringsAsFacto
 sqf17 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf17.csv", stringsAsFactors = F)
 sqf18 = read.csv(file = "/Users/sam/Desktop/csv_files/sqf18.csv", stringsAsFactors = F)
 
-
-sqf031 = sqf03
-sqf041 = sqf04
-sqf051 = sqf05
-sqf061 = sqf06
-sqf071 = sqf07
-sqf081 = sqf08
-sqf091 = sqf09
-sqf101 = sqf10
-sqf111 = sqf11
-sqf121 = sqf12
-sqf131 = sqf13
-sqf141 = sqf14
-sqf151 = sqf15
-sqf16 = sqf16
-sqf171 = sqf17
-sqf181 = sqf18
-
+#creating lists of older years and newer years
 data = list(sqf03, sqf04, sqf05,sqf06,sqf07,sqf08,sqf09,sqf10,sqf11,sqf12,sqf13,sqf14,sqf15,sqf16)
+data2 = list(sqf17, sqf18)
 
-practice = function(dataset)
+#cleaning function for older years
+clean = function(dataset)
 {
-dataset = select(dataset, pct, searched, contrabn, pistol, riflshot, asltweap, knifcuti, 
+  #Precinct, Searched, Race, Create Col. Merge Contraband Columns
+  dataset = select(dataset, pct, searched, contrabn, pistol, riflshot, asltweap, knifcuti, 
        machgun, othrweap, race) %>%
-mutate(contraband_flag = if_else((dataset$contrabn == "Y" | dataset$pistol == "Y" |
+  #turning searched and contraband columns into 0s and 1s to add them
+  mutate(contraband_flag = if_else((dataset$contrabn == "Y" | dataset$pistol == "Y" |
                                     dataset$riflshot == "Y" | dataset$asltweap == "Y" | 
                                     dataset$knifcuti == "Y" | dataset$machgun == "Y" | 
                                     dataset$othrweap == "Y"), 
                                    as.integer(1), as.integer(0))) %>%
   mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1)))
+  #grouping black hispanic and white hispanic as hispanic
   dataset$race[dataset$race == "P"] = "H"
   dataset$race[dataset$race == "Q"] = "H"
+  #formatting 2003 data into the format of the NC data. removing extraneous races 
   dataset = dataset %>%
     select(pct, searched, contraband_flag, race) %>%
     filter(race != "A") %>%
@@ -58,13 +47,55 @@ mutate(contraband_flag = if_else((dataset$contrabn == "Y" | dataset$pistol == "Y
     filter(race != "Z") %>%
     filter(race != "X") %>%
     filter(race != " ") %>%
+    filter(pct <= 123) %>%
     group_by(pct, race) %>%
+    #finding total stops, searches, and hits per race per precinct
     dplyr::summarize(numstops = length(searched), numsearches = sum(as.numeric(searched)), 
               numhits = sum(as.numeric(contraband_flag)),
               searchrate = numsearches/numstops, hitrate = numhits/numstops)
+    na.omit(dataset)
 }
 
-data = lapply(data, practice)
+#cleaning function for newer years
+clean2 = function(dataset)
+{
+  #Precinct, Searched, Race, Create Col. Merge Contraband Columns
+  dataset = select(dataset, STOP_LOCATION_PRECINCT, SEARCHED_FLAG, OTHER_CONTRABAND_FLAG, 
+                   WEAPON_FOUND_FLAG, SUSPECT_RACE_DESCRIPTION) 
+    names(dataset)[1] = "pct"
+    names(dataset)[2] = "searched"
+    names(dataset)[5] = "race"
+  #turning searched and contraband columns into 0s and 1s to add them
+  dataset = dataset %>%
+    mutate(contraband_flag = if_else((dataset$OTHER_CONTRABAND_FLAG == "Y" | 
+                                        dataset$WEAPON_FOUND_FLAG == "Y"), 
+                                     as.integer(1), as.integer(0))) %>%
+    mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1)))
+  #grouping black hispanic and white hispanic as hispanic. renaming races
+  dataset$race[dataset$race == "BLACK HISPANIC"] = "H"
+  dataset$race[dataset$race == "WHITE HISPANIC"] = "H"
+  dataset$race[dataset$race == "WHITE"] = "W"
+  dataset$race[dataset$race == "BLACK"] = "B"
+  #formatting 2003 data into the format of the NC data. removing extraneous races 
+  dataset = dataset %>%
+    select(pct, searched, contraband_flag, race) %>%
+    filter(race != "ASIAN/PAC.ISL") %>%
+    filter(race != "ASIAN / PACIFIC ISLANDER") %>%
+    filter(race != "AMERICAN INDIAN/ALASKAN NATIVE") %>%
+    filter(race != "AMER IND") %>%
+    filter(race != "(null)") %>%
+    filter(pct <= 123) %>%
+    group_by(pct, race) %>%
+    #finding total stops, searches, and hits per race per precinct
+    dplyr::summarize(numstops = length(searched), numsearches = sum(as.numeric(searched)), 
+                     numhits = sum(as.numeric(contraband_flag)),
+                     searchrate = numsearches/numstops, hitrate = numhits/numstops)
+    na.omit(dataset)
+}
+
+#applying functions to older and newer years and extracting the info
+data = lapply(data, clean)
+data2 = lapply(data2, clean2)
 sqf031 = data[[1]]
 sqf041 = data[[2]]
 sqf051 = data[[3]]
@@ -79,38 +110,5 @@ sqf131 = data[[11]]
 sqf141 = data[[12]]
 sqf151 = data[[13]]
 sqf161 = data[[14]]
-
-
-# sqf03mod = sqf03
-# 
-# # Precinct, Searched, Race, Create Col. Merge Contraband Columns
-# sqf03mod = sqf03mod %>%
-#   select(pct, searched, contrabn, pistol, riflshot, asltweap, knifcuti, machgun, othrweap, race) %>%
-#   mutate(contraband_flag = if_else((sqf03mod$contrabn == "Y" | sqf03mod$pistol == "Y" |
-#                                       sqf03mod$riflshot == "Y" | sqf03mod$asltweap == "Y" | 
-#                                       sqf03mod$knifcuti == "Y" | sqf03mod$machgun == "Y" | 
-#                                       sqf03mod$othrweap == "Y"), T, F))
-# 
-# #turning searched and contraband columns into 0s and 1s to add them
-# sqf03mod$searched[sqf03mod$searched == "N" ] = as.integer(0)
-# sqf03mod$searched[sqf03mod$searched == "Y" ] = as.integer(1)
-# sqf03mod$contraband_flag[sqf03mod$contraband_flag == F ] = as.integer(0)
-# sqf03mod$contraband_flag[sqf03mod$contraband_flag == T ] = as.integer(1)
-# 
-# #grouping black hispanic and white hispanic as hispanic
-# sqf03mod$race[sqf03mod$race == "P"] = "H"
-# sqf03mod$race[sqf03mod$race == "Q"] = "H"
-# 
-# #finding total stops, searches, and hits per race per precinct
-# #formatting 2003 data into the format of the NC data. removing extraneous races 
-# sqf03mod = sqf03mod %>% 
-#   select(pct, searched, contraband_flag, race) %>%
-#   filter(race != "A") %>%
-#   filter(race != "I") %>%
-#   filter(race != "Z") %>%
-#   filter(race != "X") %>%
-#   filter(race != " ") %>% 
-#   group_by(pct, race) %>%
-#   dplyr::summarize(numstops = length(searched), 
-#             numsearches = sum(as.numeric(searched)), numhits = sum(contraband_flag),
-#             searchrate = numsearches/numstops, hitrate = numhits/numstops)
+sqf171 = data2[[1]]
+sqf181 = data2[[2]]
