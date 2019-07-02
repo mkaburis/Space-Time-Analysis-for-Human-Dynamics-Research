@@ -53,6 +53,8 @@ clean = function(dataset)
     dplyr::summarize(numstops = length(searched), numsearches = sum(as.numeric(searched)), 
               numhits = sum(as.numeric(contraband_flag)),
               searchrate = numsearches/numstops, hitrate = numhits/numstops)
+    dataset$race = as.factor(dataset$race)
+    dataset$race = droplevels(dataset$race, exclude = "U")
     na.omit(dataset)
 }
 
@@ -90,6 +92,8 @@ clean2 = function(dataset)
     dplyr::summarize(numstops = length(searched), numsearches = sum(as.numeric(searched)), 
                      numhits = sum(as.numeric(contraband_flag)),
                      searchrate = numsearches/numstops, hitrate = numhits/numstops)
+    dataset$race = as.factor(dataset$race)
+    dataset$race = droplevels(dataset$race, exclude = "U")
     na.omit(dataset)
 }
 
