@@ -59,8 +59,9 @@ clean = function(dataset)
                                     dataset$knifcuti == "Y" | dataset$machgun == "Y" | 
                                     dataset$othrweap == "Y"), 
                                    as.integer(1), as.integer(0))) %>%
-  mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1)))
-  # grouping black hispanic and white hispanic as hispanic
+  mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1))) %>%
+  filter(searched >= contraband_flag)
+  #grouping black hispanic and white hispanic as hispanic
   dataset$race[dataset$race == "P"] = "H"
   dataset$race[dataset$race == "Q"] = "H"
   # formatting 2003 data into the format of the NC data. removing extraneous races 
@@ -96,8 +97,9 @@ clean2 = function(dataset)
     mutate(contraband_flag = if_else((dataset$OTHER_CONTRABAND_FLAG == "Y" | 
                                         dataset$WEAPON_FOUND_FLAG == "Y"), 
                                      as.integer(1), as.integer(0))) %>%
-    mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1)))
-  # grouping black hispanic and white hispanic as hispanic. renaming races
+    mutate(searched = if_else((dataset$searched == "N"), as.integer(0), as.integer(1))) %>%
+    filter(searched >= contraband_flag)
+  #grouping black hispanic and white hispanic as hispanic. renaming races
   dataset$race[dataset$race == "BLACK HISPANIC"] = "H"
   dataset$race[dataset$race == "WHITE HISPANIC"] = "H"
   dataset$race[dataset$race == "WHITE"] = "W"
@@ -125,19 +127,19 @@ clean2 = function(dataset)
 # applying functions to older and newer years and extracting the info
 data = lapply(data, clean)
 data2 = lapply(data2, clean2)
-sqf031 = data[[1]]
-sqf041 = data[[2]]
-sqf051 = data[[3]]
-sqf061 = data[[4]]
-sqf071 = data[[5]]
-sqf081 = data[[6]]
-sqf091 = data[[7]]
-sqf101 = data[[8]]
-sqf111 = data[[9]]
-sqf121 = data[[10]]
-sqf131 = data[[11]]
-sqf141 = data[[12]]
-sqf151 = data[[13]]
-sqf161 = data[[14]]
-sqf171 = data2[[1]]
-sqf181 = data2[[2]]
+sqf03mod = data[[1]]
+sqf04mod = data[[2]]
+sqf05mod = data[[3]]
+sqf06mod = data[[4]]
+sqf07mod = data[[5]]
+sqf08mod = data[[6]]
+sqf09mod = data[[7]]
+sqf10mod = data[[8]]
+sqf11mod = data[[9]]
+sqf12mod = data[[10]]
+sqf13mod = data[[11]]
+sqf14mod = data[[12]]
+sqf15mod = data[[13]]
+sqf16mod = data[[14]]
+sqf17mod = data2[[1]]
+sqf18mod = data2[[2]]
