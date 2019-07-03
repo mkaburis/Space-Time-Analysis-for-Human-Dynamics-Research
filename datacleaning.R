@@ -1,8 +1,8 @@
 # datacleaning.R
 # NJIT/HU REU (Summer 2019) 
 
-library(dplyr)
 library(plyr)
+library(dplyr)
 # library(tidyr)
 # loading in files
 # Ensure the working directory is set to where the "datasets" folder is
@@ -19,32 +19,16 @@ for (i in 1:length(myfiles)) {
   sqf_dat[[i]] = read.csv(file = myfiles[i], stringsAsFactors = F)
 }
 
-# sqf03 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Datasets/sqf-2003.csv", stringsAsFactors = F)
-# sqf04 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2004.csv", stringsAsFactors = F)
-# sqf05 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2005.csv", stringsAsFactors = F)
-# sqf06 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2006.csv", stringsAsFactors = F)
-# sqf07 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2007.csv", stringsAsFactors = F)
-# sqf08 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2008.csv", stringsAsFactors = F)
-# sqf09 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2009.csv", stringsAsFactors = F)
-# sqf10 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2010.csv", stringsAsFactors = F)
-# sqf11 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2011.csv", stringsAsFactors = F)
-# sqf12 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2012.csv", stringsAsFactors = F)
-# sqf13 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2013.csv", stringsAsFactors = F)
-# sqf14 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2014.csv", stringsAsFactors = F)
-# sqf15 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2015.csv", stringsAsFactors = F)
-# sqf16 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2016.csv", stringsAsFactors = F)
-# sqf17 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2017.csv", stringsAsFactors = F)
-# sqf18 = read.csv(file = "~/Documents/GitHub/Space-Time-Analysis-for-Human-Dynamics-Research/Raw Datasets/sqf-2018.csv", stringsAsFactors = F)
 #creating lists of older years and newer years
 
 # 2003 - 2016 datasets
-data = list(sqf_dat[1], sqf_dat[2], sqf_dat[3], sqf_dat[4], sqf_dat[5], sqf_dat[6],
-            sqf_dat[7], sqf_dat[8], sqf_dat[9], sqf_dat[10], sqf_dat[11], sqf_dat[12],
-            sqf_dat[14], sqf_dat[16])
+data = list(sqf_dat[[1]], sqf_dat[[2]], sqf_dat[[3]], sqf_dat[[4]], sqf_dat[[5]], sqf_dat[[6]],
+            sqf_dat[[7]], sqf_dat[[8]], sqf_dat[[9]], sqf_dat[[10]], sqf_dat[[11]], sqf_dat[[12]],
+            sqf_dat[[13]], sqf_dat[[14]])
 # data = list(sqf03, sqf04, sqf05,sqf06,sqf07,sqf08,sqf09,sqf10,sqf11,sqf12,sqf13,sqf14,sqf15,sqf16)
 
 # 2017 - 2018 datasets
-data2 = list(sqf_dat[17], sqf_dat[18])
+data2 = list(sqf_dat[[15]], sqf_dat[[16]])
 # data2 = list(sqf17, sqf18)
 
 # cleaning function for older years
@@ -125,6 +109,7 @@ clean2 = function(dataset)
 }
 
 # applying functions to older and newer years and extracting the info
+
 data = lapply(data, clean)
 data2 = lapply(data2, clean2)
 sqf03mod = data[[1]]
