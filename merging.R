@@ -36,20 +36,20 @@ sqf18mod = datasets[[16]]
 
 #merges a list of 5 dataframes. to include more dataframes, add them in the below line
 library(reshapmd2)
-mergeddata = rbind(melt(datasets[[1]],id=colnames(datasets[[1]])), 
+md = rbind(melt(datasets[[1]],id=colnames(datasets[[1]])), 
           melt(datasets[[2]],id=colnames(datasets[[2]])),
           melt(datasets[[3]],id=colnames(datasets[[3]])),
           melt(datasets[[4]],id=colnames(datasets[[4]])),
           melt(datasets[[5]],id=colnames(datasets[[5]])))
-md1 = ddply(mergeddata[1:7],c("pct","race.x"),numcolwise(sum))
+md1 = ddply(md[1:7],c("pct","race.x"),numcolwise(sum))
 md1$searchrate.x = md1$numsearches.x/md1$numstops.x
 md1$hitrate.x = md1$numhits.x/md1$numstops.x
-md2 = ddply(mergeddata[c(1,8:13)],c("pct","race.y"),numcolwise(sum))
+md2 = ddply(md[c(1,8:13)],c("pct","race.y"),numcolwise(sum))
 md2$searchrate.y = md2$numsearches.y/md2$numstops.y
 md2$hitrate.y = md2$numhits.y/md2$numstops.y
-md3 = ddply(mergeddata[c(1,14:20)],c("pct","race"),numcolwise(sum))
+md3 = ddply(md[c(1,14:20)],c("pct","race"),numcolwise(sum))
 md3$searchrate = md3$numsearches/md3$numstops
 md3$hitrate = md3$numhits/md3$numstops
-mergeddata = merge(md1, md2) %>% merge(md3)
+md = merge(md1, md2) %>% merge(md3)
 
-
+write.csv(md, file = "mergeddata.csv")
