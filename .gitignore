@@ -1,0 +1,7 @@
+# Folder view configuration files
+.DS_Store
+.Rhistory
+.Rapp.history
+
+# Directories
+datasets/
