@@ -50,7 +50,7 @@ md = rbind(melt(datasets[[1]],id=colnames(datasets[[1]])),
           melt(datasets[[4]],id=colnames(datasets[[4]])),
           melt(datasets[[5]],id=colnames(datasets[[5]]))) %>%
           ddply(c("pct","race"),numcolwise(sum))
-md$searchrate = md1$numsearches/md1$numstops
+md$searchrate = md$numsearches/md$numstops
 md$hitrate = md$numhits/md$numstops
 
-write.csv(md, file = "mergeddata.csv")
+write.csv(md, file = "mergeddata.csv", row.names = F)
