@@ -6,7 +6,7 @@ datasets = list(sqf03mod,sqf04mod,sqf05mod,sqf06mod,sqf07mod,sqf08mod,sqf09mod,
                 sqf10mod,sqf11mod,sqf12mod,sqf13mod,sqf14mod,sqf15mod,sqf16mod,
                 sqf17mod,sqf18mod)
 crimes = read.csv(file = "precinct_crime_data.csv", stringsAsFactors = F)
-for (i in 1: length(datasets))
+for (i in 14: length(datasets))
 {
   datasets[[i]] = merge(datasets[[i]] %>% filter(race == "B"), datasets[[i]]
              %>% filter(race == "H"), by = "pct", all = TRUE) %>%
@@ -39,7 +39,7 @@ sqf13mod = datasets[[11]]
 sqf14mod = datasets[[12]]
 sqf15mod = datasets[[13]]
 sqf16mod = datasets[[14]]
-sqf17mod = datasets[[16]]
+sqf17mod = datasets[[15]]
 sqf18mod = datasets[[16]]
 
 #merges a list of 5 dataframes. to include more dataframes, add them in line 39-43
@@ -51,6 +51,6 @@ md = rbind(melt(datasets[[1]],id=colnames(datasets[[1]])),
           melt(datasets[[5]],id=colnames(datasets[[5]]))) %>%
           ddply(c("pct","race"),numcolwise(sum))
 md$searchrate = md$numsearches/md$numstops
-md$hitrate = md$numhits/md$numstops
+md$hitrate = md$numhits/md$numsearches
 
 write.csv(md, file = "mergeddata.csv", row.names = F)
