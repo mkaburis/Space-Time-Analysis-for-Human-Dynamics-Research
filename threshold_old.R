@@ -46,6 +46,8 @@ plot_department_thresholds = function(obs, post) {
   df = obs %>% filter(race == 'W') %>%
     right_join(obs %>% filter(race != 'W'), by = 'pct')
   
+  allResids <<- sqrt(abs(df$thresholds.x - df$thresholds.y)) * sign((df$thresholds.y - df$thresholds.x))
+  
   ggplot(df) + 
     geom_point(aes(x=thresholds.x, y=thresholds.y, size = numstops.y), alpha=0.8, shape = 1) +
     geom_abline(slope=1, intercept=0, linetype='dashed') +
@@ -65,6 +67,9 @@ plot_department_thresholds = function(obs, post) {
 
 plot_department_thresholds(md, post)
 
+distVals = split(allResids, 1:2)
+# Black Distance
+dist_B = unlist(distVals[1])
 #plots thresholds across crime numbers
 plot_crime_thresholds = function(obs, post) {
   mx = max(obs$thresholds)
@@ -95,6 +100,13 @@ plot_crime_thresholds = function(obs, post) {
     ggtitle("2015 - 2018")
 }
 
+# Hispanic Distance
+dist_H = unlist(distVals[2])
+
+discriminationIndexdf = data.frame(pct = pctNames, black_disc_index = dist_B,
+                                  hispanic_disc_index = dist_H)
+
+write.csv((discriminationIndexdf),file = "discriminationIndex.csv", row.names = F)
 plot_crime_thresholds(md, post)
 
 

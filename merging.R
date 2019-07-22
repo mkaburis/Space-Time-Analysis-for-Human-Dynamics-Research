@@ -53,4 +53,4 @@ md = rbind(melt(datasets[[1]],id=colnames(datasets[[1]])),
 md$searchrate = md$numsearches/md$numstops
 md$hitrate = md$numhits/md$numsearches
 
-write.csv(md, file = "mergeddata.csv")
+write.csv(md, file = "mergeddata.csv", row.names = F)
