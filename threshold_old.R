@@ -7,8 +7,8 @@ library(scales)
 library(knitr)
 library(tikzDevice)
 
-stan_data = with(md, list(
-  N = nrow(md),
+stan_data_1 = with(md1, list(
+  N = nrow(md1),
   D = length(unique(pct)),
   R = length(unique(race)),
   d = as.integer(pct),
@@ -17,17 +17,93 @@ stan_data = with(md, list(
   s = numsearches,
   h = numhits))
 
+stan_data_2 = with(md2, list(
+  N = nrow(md2),
+  D = length(unique(pct)),
+  R = length(unique(race)),
+  d = as.integer(pct),
+  r = as.integer(race),
+  n = numstops,
+  s = numsearches,
+  h = numhits))
+
+stan_data_3 = with(md3, list(
+  N = nrow(md3),
+  D = length(unique(pct)),
+  R = length(unique(race)),
+  d = as.integer(pct),
+  r = as.integer(race),
+  n = numstops,
+  s = numsearches,
+  h = numhits))
+
+stan_data_4 = with(md4, list(
+  N = nrow(md4),
+  D = length(unique(pct)),
+  R = length(unique(race)),
+  d = as.integer(pct),
+  r = as.integer(race),
+  n = numstops,
+  s = numsearches,
+  h = numhits))
+
+pctNames = unique(md1$pct)
+
+stan_data_list = list(stan_data_1, stan_data_2, stan_data_3, stan_data_4)
 model <- stan_model(file = 'threshold_old.stan')
+fit = list()
+for (i in 1: length(stan_data_list))
+{
+  fit = c(fit, sampling(
+    model, data = stan_data_list[[i]], iter=5000,
+    init = 'random', chains=5,
+    cores=5, refresh=50, warmup = 2500,
+    control = list(adapt_delta = 0.95,
+                   max_treedepth = 12,
+                   adapt_engaged = TRUE)))
+}
 
-fit <- sampling(
-  model, data = stan_data, iter=5000,
-  init = 'random', chains=5,
-  cores=5, refresh=50, warmup = 2500,
-  control = list(adapt_delta = 0.95,
-                 max_treedepth = 12,
-                 adapt_engaged = TRUE))
+# fit1 <- sampling(
+#   model, data = stan_data_list[[1]], iter=5000,
+#   init = 'random', chains=5,
+#   cores=5, refresh=50, warmup = 2500,
+#   control = list(adapt_delta = 0.95,
+#                  max_treedepth = 12,
+#                  adapt_engaged = TRUE))
+# 
+# fit2 <- sampling(
+#   model, data = stan_data_list[[2]], iter=5000,
+#   init = 'random', chains=5,
+#   cores=5, refresh=50, warmup = 2500,
+#   control = list(adapt_delta = 0.95,
+#                  max_treedepth = 12,
+#                  adapt_engaged = TRUE))
+# 
+# fit3 <- sampling(
+#   model, data = stan_data_[[3]], iter=5000,
+#   init = 'random', chains=5,
+#   cores=5, refresh=50, warmup = 2500,
+#   control = list(adapt_delta = 0.95,
+#                  max_treedepth = 12,
+#                  adapt_engaged = TRUE))
+# 
+# fit4 <- sampling(
+#   model, data = stan_data_[[4]], iter=5000,
+#   init = 'random', chains=5,
+#   cores=5, refresh=50, warmup = 2500,
+#   control = list(adapt_delta = 0.95,
+#                  max_treedepth = 12,
+#                  adapt_engaged = TRUE))
+# 
+# 
 
-post = rstan::extract(fit)
+post1 = rstan::extract(fit[[1]])
+post2 = rstan::extract(fit[[2]])
+post3 = rstan::extract(fit[[3]])
+post4 = rstan::extract(fit[[4]])
+
+post = list(post1, post2, post3, post4)
+
 
 signal_to_p = function(x, phi, delta){
   #Checked. Converts x -> p. 
@@ -36,7 +112,10 @@ signal_to_p = function(x, phi, delta){
   return(p)
 }
 
-md$thresholds = colMeans(signal_to_p(post$t_i, post$phi, post$delta))
+md1$thresholds = colMeans(signal_to_p(post[[1]]$t_i, post[[1]]$phi, post[[1]]$delta))
+md2$thresholds = colMeans(signal_to_p(post[[2]]$t_i, post[[2]]$phi, post[[2]]$delta))
+md3$thresholds = colMeans(signal_to_p(post[[3]]$t_i, post[[3]]$phi, post[[3]]$delta))
+md4$thresholds = colMeans(signal_to_p(post[[4]]$t_i, post[[4]]$phi, post[[4]]$delta))
 
 
 plot_department_thresholds = function(obs, post) {
@@ -58,19 +137,28 @@ plot_department_thresholds = function(obs, post) {
           legend.justification=c(0,1),
           legend.title = element_blank(),
           legend.background = element_rect(fill = 'transparent'),
-          panel.margin.x=unit(1.5, "cm"),
+          panel.spacing.x=unit(1.5, "cm"),
           plot.title = element_text(hjust = 0.45)) +
     scale_color_manual(values = colors[-1], labels=races[-1]) +
     guides(size=FALSE) + facet_grid(.~race.y) +
     ggtitle("2015 - 2018")
 }
 
-plot_department_thresholds(md, post)
+plot_department_thresholds(md1, post)
 
 distVals = split(allResids, 1:2)
 # Black Distance
 dist_B = unlist(distVals[1])
 #plots thresholds across crime numbers
+
+# Hispanic Distance
+dist_H = unlist(distVals[2])
+
+discriminationIndexdf = data.frame(pct = pctNames, black_disc_index = dist_B,
+                                   hispanic_disc_index = dist_H)
+
+write.csv((discriminationIndexdf),file = "discriminationIndex.csv", row.names = F)
+
 plot_crime_thresholds = function(obs, post) {
   mx = max(obs$thresholds)
   cx = max(obs$numcrimes)
@@ -100,14 +188,7 @@ plot_crime_thresholds = function(obs, post) {
     ggtitle("2015 - 2018")
 }
 
-# Hispanic Distance
-dist_H = unlist(distVals[2])
-
-discriminationIndexdf = data.frame(pct = pctNames, black_disc_index = dist_B,
-                                  hispanic_disc_index = dist_H)
-
-write.csv((discriminationIndexdf),file = "discriminationIndex.csv", row.names = F)
-plot_crime_thresholds(md, post)
+plot_crime_thresholds(md1, post)
 
 
 search_rate_ppc <- function(obs, post, ylim = 0.03) {
@@ -146,11 +227,11 @@ hit_rate_ppc <- function(obs, post, ylim = 0.3) {
     ggtitle("2015 - 2018")
 }
 
-search_rate_ppc(md, post)
+search_rate_ppc(md1, post)
 
-hit_rate_ppc(md, post)
+hit_rate_ppc(md1, post)
 
-mdmod = md %>% 
+mdmod = md1 %>% 
   mutate(thresholds = colMeans(signal_to_p(post$t_i, post$phi, post$delta))) %>%
   group_by(pct) %>%
   mutate(total_stops = sum(numstops)) %>%
