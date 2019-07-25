@@ -5,10 +5,10 @@
 .gitignore.swp
 
 # Files to discard
-discriminationIndexChunk1.csv
-discriminationIndexChunk2.csv
-discriminationIndexChunk3.csv
-discriminationIndexChunk4.csv
+discriminationIndex1.csv
+discriminationIndex2.csv
+discriminationIndex3.csv
+discriminationIndex4.csv
 mergeddata.csv
 mergeddata1.csv
 mergeddata2.csv
