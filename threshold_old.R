@@ -87,7 +87,7 @@ md_list[[3]]$thresholds = colMeans(signal_to_p(post[[3]]$t_i, post[[3]]$phi, pos
 md_list[[4]]$thresholds = colMeans(signal_to_p(post[[4]]$t_i, post[[4]]$phi, post[[4]]$delta))
 
 
-plot_department_thresholds = function(obs, post) {
+plot_department_thresholds = function(obs, post, itr) {
   colors = c('blue', 'black', 'red')
   races = as.character(levels(obs$race))
   mx = max(obs$thresholds)
@@ -110,12 +110,21 @@ plot_department_thresholds = function(obs, post) {
           plot.title = element_text(hjust = 0.45)) +
     scale_color_manual(values = colors[-1], labels=races[-1]) +
     guides(size=FALSE) + facet_grid(.~race.y) +
+    
+    if(itr == 1)
+      ggtitle("2003 - 2006")
+    else if (itr == 2)
+      ggtitle("2007 - 2010")
+    else if (itr == 3)
+      ggtitle("2011 - 2014")
+    else if (itr == 4)
     ggtitle("2015 - 2018")
+  
 }
 
 
 
-plot_crime_thresholds = function(obs, post) {
+plot_crime_thresholds = function(obs, post, itr) {
   mx = max(obs$thresholds)
   cx = max(obs$numcrimes)
   df = obs %>% filter(race == 'W') %>%
@@ -141,13 +150,20 @@ plot_crime_thresholds = function(obs, post) {
           plot.title = element_text(hjust = 0.45)) + 
     scale_color_manual(values = c("White" = "blue", "Black" = "black", 
                                   "Hispanic" = "red")) +
+  if(itr == 1)
+      ggtitle("2003 - 2006")
+  else if (itr == 2)
+    ggtitle("2007 - 2010")
+  else if (itr == 3)
+    ggtitle("2011 - 2014")
+  else if (itr == 4)
     ggtitle("2015 - 2018")
 }
 
 
 
 
-search_rate_ppc <- function(obs, post, ylim = 0.03) {
+search_rate_ppc <- function(obs, post, itr, ylim = 0.03) {
   obs$pred_search_rate = colMeans(post$searchrate)
   ggplot(data=obs, aes(x=pred_search_rate, y=pred_search_rate-searchrate)) +
     geom_point(aes(size=numstops, color=race), alpha = 0.8) + 
@@ -162,10 +178,18 @@ search_rate_ppc <- function(obs, post, ylim = 0.03) {
           plot.title = element_text(hjust = 0.45)) +
     scale_color_manual(values=c('blue','black','red', 'green4')) +
     guides(size=FALSE) +
+    
+  if(itr == 1)
+      ggtitle("2003 - 2006")
+  else if (itr == 2)
+    ggtitle("2007 - 2010")
+  else if (itr == 3)
+    ggtitle("2011 - 2014")
+  else if (itr == 4)
     ggtitle("2015 - 2018")
 }
 
-hit_rate_ppc <- function(obs, post, ylim = 0.3) {
+hit_rate_ppc <- function(obs, post, itr, ylim = 0.3) {
   obs$pred_hit_rate = colMeans(post$hitrate)
   ggplot(data=obs, aes(x=pred_hit_rate, y=hitrate-pred_hit_rate)) +
     geom_point(aes(size=numstops, color=race), alpha=0.8) + 
@@ -180,13 +204,21 @@ hit_rate_ppc <- function(obs, post, ylim = 0.3) {
           plot.title = element_text(hjust = 0.45))+
     scale_color_manual(values=c('blue','black','red', 'green4')) +
     guides(size=FALSE) +
+    
+  if(itr == 1)
+      ggtitle("2003 - 2006")
+  else if (itr == 2)
+    ggtitle("2007 - 2010")
+  else if (itr == 3)
+    ggtitle("2011 - 2014")
+  else if (itr == 4)
     ggtitle("2015 - 2018")
 }
 
 disc_indx_list = list()
 
 for (i in 1: length(md_list)){
-  plot_department_thresholds(md_list[[i]], post[[i]])
+  print(plot_department_thresholds(md_list[[i]], post[[i]], i))
   
   distVals = split(allResids, 1:2)
   # Black Distance
@@ -207,9 +239,9 @@ for (i in 1: length(md_list)){
                                      hispanic_disc_index = dist_H)
   }
   
-  plot_crime_thresholds(md_list[[i]], post[[i]])
-  search_rate_ppc(md_list[[i]], post[[i]])
-  hit_rate_ppc(md_list[[i]], post[[i]])
+  print(plot_crime_thresholds(md_list[[i]], post[[i]], i))
+  print(search_rate_ppc(md_list[[i]], post[[i]], i))
+  print(hit_rate_ppc(md_list[[i]], post[[i]], i))
 }
 
 
