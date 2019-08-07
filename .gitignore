@@ -2,6 +2,22 @@
 .DS_Store
 .Rhistory
 .Rapp.history
+.gitignore.swp
+
+# Files to discard
+discriminationIndex1.csv
+discriminationIndex2.csv
+discriminationIndex3.csv
+discriminationIndex4.csv
+mergeddata.csv
+mergeddata1.csv
+mergeddata2.csv
+mergeddata3.csv
+mergeddata4.csv
+precinct_crime_data.csv
+discriminationIndex.csv
+threshold_GP1.rds
+threshold_GP1.stan
 
 # Directories
 datasets/
