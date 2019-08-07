@@ -3,13 +3,14 @@ title: "Spatiotemporal Analysis of Racial Bias in NYPD Stop, Question, and Frisk
 author:
 - $\emph{\textbf{Mihail Kaburis\textsuperscript{1} | Samantha Kamath\textsuperscript{2}
   | Jasmine Mdlock\textsuperscript{3}}}$
+- $\emph{\textbf{Advisor:\ Dr. Xinyue Ye\textsuperscript{4} | Mentor:\ Jun Yuan (PhD Student)\textsuperscript{4}}}$
 - \emph{Department of Informatics}
 - \emph{\textsuperscript{1}University of South Florida, Tampa, FL 33620}
 - \emph{\textsuperscript{2}University of Miami, Coral Gables, FL 33146}
 - \emph{\textsuperscript{3}University of Maryland, Baltimore County, Baltimore MD
   21250 }
 - \emph{\textsuperscript{4}New Jersey Institute of Technology, Newark, NJ 07102}
-- $\emph{\textbf{Advisor:\ Dr. Xinyue Ye\textsuperscript{4} | Mentor:\ Jun Yuan (PhD Student)\textsuperscript{4}}}$
+
 output:
   pdf_document:
     fig_caption: yes
