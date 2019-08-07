@@ -53,7 +53,7 @@ The threshold test model was originally developed in 2017 by researchers at Stan
 
 
 ```{r, out.width = "100%", echo = FALSE, fig.align = 'center', fig.cap = paste("Thresholds of Two Risk Distributions")}
-knitr::include_graphics("riskDist.png")
+knitr::include_graphics("images/riskDist.png")
 ```
 
 The threshold test, however, combines information on both the search and hit rate and allows us to directly infer the standard of evidence officers require before carrying out a search. The test uses a Bayesian model to determine a race- and precinct-specific search threshold — a specific likelihood of carrying contraband at which an officer decides to search an individual. If an officer determines an individual’s probability of carrying contraband is greater than this threshold, the individual is searched.
@@ -120,12 +120,12 @@ $I_d = \sqrt{|x_0 - y_0|} \cdot \mbox{sign}(y_0 - x_0)$
 \break
 
 ```{r, out.width = "100%", echo = FALSE, fig.align='center', fig.cap = paste("Calculating the racial discrimination index")}
-knitr::include_graphics("discIndex.png")
+knitr::include_graphics("images/discIndex.png")
 ```
 Using $I_D$, we then plotted the overall distribution of the amounts of racial discrimination within each precinct as a kernel density function for each four-year chunk to determine overall potential fluctuations of racial bias. The amount of racial bias against black, white, and Hispanic individuals in each precinct was also visualized over time as a heatmap using ArcGIS to portray trends within each precinct. Above is an example of a kernel density distribution plotted over a histogram. The source code for this process can be found below.
 \break
 ```{r, out.width = "75%", echo = FALSE, fig.align = "center", fig.cap = paste("Kernel Desnity Distribution Plotted Over a Histogram")}
-knitr::include_graphics("kdExample.png")
+knitr::include_graphics("images/kdExample.png")
 ```
 
 ```{r dataInfo, fig.height=4, fig.width=8, include = FALSE}
@@ -302,7 +302,7 @@ for (i in 1: length(md_list)){
 The original NYPD SQF dataset was filtered using the same method as previously described; however, the data was left in its original form describing individual stops, rather than aggregating total stops, searches, and hits. The datasets from 2006 - 2018 included a column with x- and y-coordinates from the NAD83 / New York Long Island (ftUS) state plane coordinate system. The script converts these coordinates to latitude and longitude using ArcGIS’s geocoding APIs values which can be plotted with a geographic information systems (GIS) software. The datasets from 2003 - 2005 did not include the state plane coordinates. Another python script was written that merged together columns with address information about stops including street numbers, street names, and intersection names. This combined information was fed into the ArcGIS geocoding APIs to generate latitude and longitude coordinates. This process took approximately one week to complete due to the process intensive nature of geocoding addresses. We utilized a high-performance computing cluster to ensure a sturdy network and adequate memory for the task. Through QGIS, each year’s stops was visualized as a density heatmap. The heatmaps for all years were then animated as a GIF using ezgif.com. We also utilized ArCGIS to create two map visualizes indicating how racial bias against black and Hispanic individuals has changed over time in the city.
 
 ```{r, out.width = "100%", echo = FALSE, fig.align = "center", fig.cap = paste("Methodology flowchart for processing SQF datasets")}
-knitr::include_graphics("method.png")
+knitr::include_graphics("images/method.png")
 ```
 
 \newpage
@@ -474,7 +474,7 @@ Green precincts represent precincts in which the discrimination index for either
 
 
 ```{r, out.width = "100%", echo = FALSE, fig.align = "center", fig.cap = paste("Black Discrimination Index Heatmap")}
-knitr::include_graphics("visualization.png")
+knitr::include_graphics("images/visualization.png")
 ```
 
 
